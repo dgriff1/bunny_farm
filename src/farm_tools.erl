@@ -57,7 +57,9 @@ decode_payload(bson, Payload) ->
   catch
     error:{badmatch,_} -> decode_payload(erlang, Payload);
     error:function_clause -> decode_payload(erlang, Payload)
-  end.
+  end;
+decode_payload(_, Payload) ->
+    Payload.
 
 encode_payload(Payload) -> encode_payload(bson, Payload).
 
@@ -73,7 +75,8 @@ encode_payload(<<"application/bson">>, Payload) ->
 encode_payload(bson, Payload) when is_list(Payload) ->
   bson_binary:put_document(bson:document(Payload));
 encode_payload(bson, Payload) ->
-  bson_binary:put_document(bson:document([Payload])).
+  bson_binary:put_document(bson:document([Payload]));
+encode_payload(_, Payload) -> Payload.
 
 %% Convert types to strings
 to_list(Binary) when is_binary(Binary) -> binary_to_list(Binary);
